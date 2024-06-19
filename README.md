@@ -113,6 +113,11 @@ The mean average precision (mAP) results for each dataset are:
 | ActivityNet | 54.9 | 38.0 | 8.0  | 36.7 |
 
 
+| Dataset                            | 0.3    | 0.4    | 0.5    | 0.6    | 0.7    | Avg   |
+|------------------------------------|--------|--------|--------|--------|--------|-------|
+| VideoMAE V2-g features of THUMOS14 | 84.64  | 80.33  | 73.58  | 63.03  | 48.18  | 69.95 |
+ |
+
 
 *There has been a slight improvement in the results of some datasets compared to those reported in the paper.
 *Note: We conduct all our experiments on a single A100-40G GPU and the training results may vary depending on the type of GPU used.

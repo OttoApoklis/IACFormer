@@ -2,60 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="802a2c07-c24c-4441-80cb-9222895ce262" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/IACFormer.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/configs/anet_tsp.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/configs/epic_slowfast_noun.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/configs/epic_slowfast_verb.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/configs/hacs_i3d.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/configs/hacs_slowfast.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/configs/thumos_i3d.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/configs/thumos_mae.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/eval.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/framework.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/core/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/core/config.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/datasets/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/datasets/anet.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/datasets/data_utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/datasets/datasets.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/datasets/epic_kitchens.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/datasets/hacs.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/datasets/thumos14.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/modeling/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/modeling/backbones.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/modeling/blocks.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/modeling/loc_generators.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/modeling/losses.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/modeling/meta_archs.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/modeling/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/modeling/necks.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/modeling/weight_init.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/utils/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/utils/count_macs.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/utils/csrc/nms_cpu.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/utils/lr_schedulers.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/utils/metrics.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/utils/nms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/utils/postprocessing.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/utils/setup.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/libs/utils/train_utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/loralib/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/loralib/layers.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/loralib/utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/prune/compress.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tools/ant_tsp_script.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tools/epic_noun_slowfast_script.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tools/epic_verb_slowfast_script.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tools/hacs_slowfast_script.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tools/thumos_i3d_script.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,7 +33,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1718777879285</updated>
-      <workItem from="1718777881142" duration="975000" />
+      <workItem from="1718777881142" duration="2165000" />
     </task>
     <servers />
   </component>
