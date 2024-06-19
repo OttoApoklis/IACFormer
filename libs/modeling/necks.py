@@ -3,7 +3,7 @@ from torch import nn
 from torch.nn import functional as F
 
 from .models import register_neck
-from .blocks import MaskedConv1D, LayerNorm, SGPBlock
+from .blocks import MaskedConv1D, LayerNorm, IACM
 
 
 @register_neck("fpn")

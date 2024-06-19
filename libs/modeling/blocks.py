@@ -763,7 +763,7 @@ class ConvBlock(nn.Module):
 
         return out, out_mask
 
-class SGPBlock(nn.Module):
+class IACM(nn.Module):
     """
     A simple conv block similar to the basic block used in ResNet
     """
@@ -806,22 +806,22 @@ class SGPBlock(nn.Module):
         print(up_size)
         print("kernel_size")
         print(kernel_size)
-        self.psi = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd)
-        self.psi1 = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd)
-        self.psi_empty = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd, dilation=1)
-        self.fc = nn.Conv1d(n_embd, n_embd, 1, stride=1, padding=0, groups=n_embd)
-        self.fc1 = nn.Conv1d(n_embd, n_embd, 1, stride=1, padding=0, groups=n_embd)
-        self.convw = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd)
-        self.convw_empty = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd, dilation=1)
-        self.convkw = nn.Conv1d(n_embd, n_embd, up_size, stride=1, padding=up_size // 2, groups=n_embd)
-        self.convkw_empty0 = nn.Conv1d(n_embd, n_embd, 3, stride=1, padding=1, groups=n_embd, dilation=1)
-        self.convkw_empty1 = nn.Conv1d(n_embd, n_embd, up_size//2-1, stride=1, padding=(up_size // 4)*2-1, groups=n_embd, dilation=2)
-        self.convw1 = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd)
-        self.convkw1 = nn.Conv1d(n_embd, n_embd, up_size, stride=1, padding=up_size // 2, groups=n_embd)
-        self.convw2 = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd)
-        self.convkw3 = nn.Conv1d(n_embd, n_embd, up_size, stride=1, padding=up_size // 2, groups=n_embd)
-        self.global_fc = nn.Conv1d(n_embd, n_embd, 1, stride=1, padding=0, groups=n_embd)
-        self.global_fc1 = nn.Conv1d(n_embd, n_embd, 1, stride=1, padding=0, groups=n_embd)
+        self.convA2 = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd)
+        self.convA21 = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd)
+        self.DilatedconvA2 = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd, dilation=1)
+        self.convI = nn.Conv1d(n_embd, n_embd, 1, stride=1, padding=0, groups=n_embd)
+        self.convI1 = nn.Conv1d(n_embd, n_embd, 1, stride=1, padding=0, groups=n_embd)
+        self.convA = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd)
+        self.convA_empty = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd, dilation=1)
+        self.convBA = nn.Conv1d(n_embd, n_embd, up_size, stride=1, padding=up_size // 2, groups=n_embd)
+        self.convBA_empty0 = nn.Conv1d(n_embd, n_embd, 3, stride=1, padding=1, groups=n_embd, dilation=1)
+        self.convBA_empty1 = nn.Conv1d(n_embd, n_embd, up_size//2-1, stride=1, padding=(up_size // 4)*2-1, groups=n_embd, dilation=2)
+        self.convA1 = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd)
+        self.convBA1 = nn.Conv1d(n_embd, n_embd, up_size, stride=1, padding=up_size // 2, groups=n_embd)
+        self.convA2 = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd)
+        self.convBA3 = nn.Conv1d(n_embd, n_embd, up_size, stride=1, padding=up_size // 2, groups=n_embd)
+        self.global_convI = nn.Conv1d(n_embd, n_embd, 1, stride=1, padding=0, groups=n_embd)
+        self.global_convI1 = nn.Conv1d(n_embd, n_embd, 1, stride=1, padding=0, groups=n_embd)
 
         # input
         if n_ds_stride > 1:
@@ -904,35 +904,35 @@ class SGPBlock(nn.Module):
         self.reset_params(init_conv_vars=init_conv_vars)
 
     def reset_params(self, init_conv_vars=0):
-        torch.nn.init.normal_(self.psi.weight, 0, init_conv_vars)
-        torch.nn.init.normal_(self.psi1.weight, 0, init_conv_vars)
-        torch.nn.init.normal_(self.psi_empty.weight, 0, init_conv_vars)
-        torch.nn.init.normal_(self.fc.weight, 0, init_conv_vars)
-        torch.nn.init.normal_(self.fc1.weight, 0, init_conv_vars)
-        torch.nn.init.normal_(self.convw.weight, 0, init_conv_vars)
-        torch.nn.init.normal_(self.convkw.weight, 0, init_conv_vars)
-        torch.nn.init.normal_(self.convw1.weight, 0, init_conv_vars)
-        torch.nn.init.normal_(self.convkw1.weight, 0, init_conv_vars)
-        torch.nn.init.normal_(self.convw_empty.weight, 0, init_conv_vars)
-        torch.nn.init.normal_(self.convkw_empty0.weight, 0, init_conv_vars)
-        torch.nn.init.normal_(self.convkw_empty1.weight, 0, init_conv_vars)
-        torch.nn.init.normal_(self.global_fc.weight, 0, init_conv_vars)
-        torch.nn.init.normal_(self.global_fc1.weight, 0, init_conv_vars)
-        # self.psi.reset_params()
-        # self.psi1.reset_params()
-        # self.fc.reset_params()
-        # self.fc1.reset_params()
-        # self.convw.reset_params()
-        # self.convkw.reset_params()
-        # self.convw1.reset_params()
-        # self.convkw1.reset_params()
-        # self.global_fc.reset_params()
-        # self.global_fc1.reset_params()
-        torch.nn.init.constant_(self.psi.bias, 0)
-        torch.nn.init.constant_(self.fc.bias, 0)
-        torch.nn.init.constant_(self.convw.bias, 0)
-        torch.nn.init.constant_(self.convkw.bias, 0)
-        torch.nn.init.constant_(self.global_fc.bias, 0)
+        torch.nn.init.normal_(self.convA2.weight, 0, init_conv_vars)
+        torch.nn.init.normal_(self.convA21.weight, 0, init_conv_vars)
+        torch.nn.init.normal_(self.convA2_empty.weight, 0, init_conv_vars)
+        torch.nn.init.normal_(self.convI.weight, 0, init_conv_vars)
+        torch.nn.init.normal_(self.convI1.weight, 0, init_conv_vars)
+        torch.nn.init.normal_(self.convA.weight, 0, init_conv_vars)
+        torch.nn.init.normal_(self.convBA.weight, 0, init_conv_vars)
+        torch.nn.init.normal_(self.convA1.weight, 0, init_conv_vars)
+        torch.nn.init.normal_(self.convBA1.weight, 0, init_conv_vars)
+        torch.nn.init.normal_(self.convA_empty.weight, 0, init_conv_vars)
+        torch.nn.init.normal_(self.convBA_empty0.weight, 0, init_conv_vars)
+        torch.nn.init.normal_(self.convBA_empty1.weight, 0, init_conv_vars)
+        torch.nn.init.normal_(self.global_convI.weight, 0, init_conv_vars)
+        torch.nn.init.normal_(self.global_convI1.weight, 0, init_conv_vars)
+        # self.convA2.reset_params()
+        # self.convA21.reset_params()
+        # self.convI.reset_params()
+        # self.convI1.reset_params()
+        # self.convA.reset_params()
+        # self.convBA.reset_params()
+        # self.convA1.reset_params()
+        # self.convBA1.reset_params()
+        # self.global_convI.reset_params()
+        # self.global_convI1.reset_params()
+        torch.nn.init.constant_(self.convA2.bias, 0)
+        torch.nn.init.constant_(self.convI.bias, 0)
+        torch.nn.init.constant_(self.convA.bias, 0)
+        torch.nn.init.constant_(self.convBA.bias, 0)
+        torch.nn.init.constant_(self.global_convI.bias, 0)
 
     def forward(self, x, mask):
         # X shape: B, C, T
@@ -945,356 +945,43 @@ class SGPBlock(nn.Module):
         ).detach()
         # out_mask = mask.to(x.dtype)
         out = self.ln(x)
-        psi = self.psi(out)
-        psi1 = self.psi1(out)
-        psi_empty = self.psi_empty(out)
-        fc = self.fc(out)
-        fc1 = self.fc1(out)
-        convw = self.convw(out)
-        convw1 = self.convw1(out)
-        convkw = self.convkw(out)
-        convkw1 = self.convkw1(out)
-        convw_empty = self.convw_empty(out)
-        convkw_empty0 = self.convkw_empty0(out)
-        convkw_empty1 = self.convkw_empty1(convkw_empty0)
-        phi = torch.relu(self.global_fc(out.mean(dim=-1, keepdim=True)))
-        phi1 = torch.relu(self.global_fc1(out.mean(dim=-1, keepdim=True)))
+        convA2 = self.convA2(out)
+        convA21 = self.convA21(out)
+        DilatedconvA2 = self.DilatedconvA2(out)
+        convI = self.convI(out)
+        convI1 = self.convI1(out)
+        convA = self.convA(out)
+        convA1 = self.convA1(out)
+        convBA = self.convBA(out)
+        convBA1 = self.convBA1(out)
+        DilatedconvA = self.convA_empty(out)
+        convBA_empty0 = self.convBA_empty0(out)
+        DilatedConvBA = self.convBA_empty1(convBA_empty0)
+        convBI = torch.relu(self.global_convI(out.mean(dim=-1, keepdim=True)))
+        convBI1 = torch.relu(self.global_convI1(out.mean(dim=-1, keepdim=True)))
         # 当前最高
-        # out = fc * phi + (convw + convkw) * psi + \
-        #               torch.relu((convw1 + convkw1) * torch.relu(psi1.mean(dim=-1, keepdim=True))) + \
+        # out = convI * convBI + (convA + convBA) * convA2 + \
+        #               torch.relu((convA1 + convBA1) * torch.relu(convA21.mean(dim=-1, keepdim=True))) + \
         #               out + \
-        #               torch.relu(fc1*phi1)
-        # out = fc * phi + (convw + convkw) * psi + torch.relu( (convw1 + convkw1) * torch.relu(psi1.mean(dim=-1,keepdim=True))) + out
-        # torch.relu(convw2*torch.relu(psi2.mean(dim=-1, keepdim=True))) + \
+        #               torch.relu(convI1*convBI1)
+        # out = convI * convBI + (convA + convBA) * convA2 + torch.relu( (convA1 + convBA1) * torch.relu(convA21.mean(dim=-1,keepdim=True))) + out
+        # torch.relu(convA2*torch.relu(convA22.mean(dim=-1, keepdim=True))) + \
         if(self.add_new_direct!=None):
-            out = fc * phi + (convw + convkw) * psi + \
-                  (convw_empty+convkw_empty1) * psi_empty + \
-                  torch.relu((convw1 + convkw1) * torch.relu(psi1.mean(dim=-1, keepdim=True))) + \
+            out = convI * convBI + (convA + convBA) * convA2 + \
+                  (DilatedconvA+DilatedConvBA) * DilatedconvA2 + \
+                  torch.relu((convA1 + convBA1) * torch.relu(convA21.mean(dim=-1, keepdim=True))) + \
                   out + \
-                  torch.relu(fc1*phi1)
+                  torch.relu(convI1*convBI1)
         else:
-            out = fc * phi + (convw + convkw) * psi + \
-                  torch.relu((convw1 + convkw1) * torch.relu(psi1.mean(dim=-1, keepdim=True))) + \
+            out = convI * convBI + (convA + convBA) * convA2 + \
+                  torch.relu((convA1 + convBA1) * torch.relu(convA21.mean(dim=-1, keepdim=True))) + \
                   out + \
-                  torch.relu(fc1 * phi1)
+                  torch.relu(convI1 * convBI1)
         out = x * out_mask + self.drop_path_out(out)
         # FFN
         out = out + self.drop_path_mlp(self.mlp(self.gn(out)))
 
         return out, out_mask.bool()
-
-# class SGPBlock(nn.Module):
-#     """
-#     A simple conv block similar to the basic block used in ResNet
-#     """
-#
-#     def __init__(
-#             self,
-#             n_embd,  # dimension of the input features
-#             kernel_size=3,  # conv kernel size
-#             n_ds_stride=1,  # downsampling stride for the current layer
-#             k=1.5,  # k
-#             group=1,  # group for cnn
-#             n_out=None,  # output dimension, if None, set to input dim
-#             n_hidden=None,  # hidden dim for mlp
-#             path_pdrop=0.0,  # drop path rate
-#             act_layer=nn.GELU,  # nonlinear activation used after conv, default ReLU,
-#             downsample_type='max',
-#             init_conv_vars=1  # init gaussian variance for the weight
-#     ):
-#         super().__init__()
-#         # must use odd sized kernel
-#         # assert (kernel_size % 2 == 1) and (kernel_size > 1)
-#         # padding = kernel_size // 2
-#
-#         self.kernel_size = kernel_size
-#         self.stride = n_ds_stride
-#
-#         if n_out is None:
-#             n_out = n_embd
-#
-#         self.ln = LayerNorm(n_embd)
-#
-#         self.gn = nn.GroupNorm(16, n_embd)
-#
-#         assert kernel_size % 2 == 1
-#         # add 1 to avoid have the same size as the instant-level branch
-#         up_size = round((kernel_size + 1) * k)
-#         up_size = up_size + 1 if up_size % 2 == 0 else up_size
-#
-#         self.psi = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd)
-#         self.fc = nn.Conv1d(n_embd, n_embd, 1, stride=1, padding=0, groups=n_embd)
-#         self.convw = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd)
-#         self.convkw = nn.Conv1d(n_embd, n_embd, up_size, stride=1, padding=up_size // 2, groups=n_embd)
-#         self.global_fc = nn.Conv1d(n_embd, n_embd, 1, stride=1, padding=0, groups=n_embd)
-#
-#         # input
-#         if n_ds_stride > 1:
-#             if downsample_type == 'max':
-#                 kernel_size, stride, padding = \
-#                     n_ds_stride + 1, n_ds_stride, (n_ds_stride + 1) // 2
-#                 self.downsample = nn.MaxPool1d(
-#                     kernel_size, stride=stride, padding=padding)
-#                 self.stride = stride
-#             elif downsample_type == 'avg':
-#                 self.downsample = nn.Sequential(nn.AvgPool1d(n_ds_stride, stride=n_ds_stride, padding=0),
-#                                                 nn.Conv1d(n_embd, n_embd, 1, 1, 0))
-#                 self.stride = n_ds_stride
-#             else:
-#                 raise NotImplementedError("downsample type error")
-#         else:
-#             self.downsample = nn.Identity()
-#             self.stride = 1
-#
-#         # two layer mlp
-#         if n_hidden is None:
-#             n_hidden = 4 * n_embd  # default
-#         if n_out is None:
-#             n_out = n_embd
-#
-#         self.mlp = nn.Sequential(
-#             nn.Conv1d(n_embd, n_hidden, 1, groups=group),
-#             act_layer(),
-#             nn.Conv1d(n_hidden, n_out, 1, groups=group),
-#         )
-#
-#         # drop path
-#         if path_pdrop > 0.0:
-#             self.drop_path_out = AffineDropPath(n_embd, drop_prob=path_pdrop)
-#             self.drop_path_mlp = AffineDropPath(n_out, drop_prob=path_pdrop)
-#         else:
-#             self.drop_path_out = nn.Identity()
-#             self.drop_path_mlp = nn.Identity()
-#
-#         self.act = act_layer()
-#         self.reset_params(init_conv_vars=init_conv_vars)
-#
-#     def reset_params(self, init_conv_vars=0):
-#         torch.nn.init.normal_(self.psi.weight, 0, init_conv_vars)
-#         torch.nn.init.normal_(self.fc.weight, 0, init_conv_vars)
-#         torch.nn.init.normal_(self.convw.weight, 0, init_conv_vars)
-#         torch.nn.init.normal_(self.convkw.weight, 0, init_conv_vars)
-#         torch.nn.init.normal_(self.global_fc.weight, 0, init_conv_vars)
-#         torch.nn.init.constant_(self.psi.bias, 0)
-#         torch.nn.init.constant_(self.fc.bias, 0)
-#         torch.nn.init.constant_(self.convw.bias, 0)
-#         torch.nn.init.constant_(self.convkw.bias, 0)
-#         torch.nn.init.constant_(self.global_fc.bias, 0)
-#
-#     def forward(self, x, mask):
-#         # X shape: B, C, T
-#         B, C, T = x.shape
-#         x = self.downsample(x)
-#         out_mask = F.interpolate(
-#             mask.to(x.dtype),
-#             size=torch.div(T, self.stride, rounding_mode='trunc'),
-#             mode='nearest'
-#         ).detach()
-#
-#         out = self.ln(x)
-#         psi = self.psi(out)
-#         fc = self.fc(out)
-#         convw = self.convw(out)
-#         convkw = self.convkw(out)
-#         phi = torch.relu(self.global_fc(out.mean(dim=-1, keepdim=True)))
-#         out = fc * phi + (convw + convkw) * psi + out
-#
-#         out = x * out_mask + self.drop_path_out(out)
-#         # FFN
-#         out = out + self.drop_path_mlp(self.mlp(self.gn(out)))
-#
-#         return out, out_mask.bool()
-
-# mine
-# class SGPBlock(nn.Module):
-#     """
-#     A simple conv block similar to the basic block used in ResNet
-#     """
-#
-#     def __init__(
-#             self,
-#             n_embd,  # dimension of the input features
-#             kernel_size=3,  # conv kernel size
-#             n_ds_stride=1,  # downsampling stride for the current layer
-#             k=1.5,  # k
-#             group=1,  # group for cnn
-#             n_out=None,  # output dimension, if None, set to input dim
-#             n_hidden=None,  # hidden dim for mlp
-#             path_pdrop=0.0,  # drop path rate
-#             act_layer=nn.GELU,  # nonlinear activation used after conv, default ReLU,
-#             downsample_type='max',
-#             init_conv_vars=1  # init gaussian variance for the weight
-#     ):
-#         super().__init__()
-#         # must use odd sized kernel
-#         # assert (kernel_size % 2 == 1) and (kernel_size > 1)
-#         # padding = kernel_size // 2
-#
-#         self.kernel_size = kernel_size
-#         self.stride = n_ds_stride
-#
-#         if n_out is None:
-#             n_out = n_embd
-#
-#         self.ln = LayerNorm(n_embd)
-#
-#         self.gn = nn.GroupNorm(16, n_embd)
-#
-#         assert kernel_size % 2 == 1
-#         # add 1 to avoid have the same size as the instant-level branch
-#         up_size = round((kernel_size + 1) * k)
-#         up_size = up_size + 1 if up_size % 2 == 0 else up_size
-#
-#         self.psi = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd)
-#         self.psi1 = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd)
-#         self.fc = nn.Conv1d(n_embd, n_embd, 1, stride=1, padding=0, groups=n_embd)
-#         self.fc1 = nn.Conv1d(n_embd, n_embd, 1, stride=1, padding=0, groups=n_embd)
-#         self.convw = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd)
-#         self.convkw = nn.Conv1d(n_embd, n_embd, up_size, stride=1, padding=up_size // 2, groups=n_embd)
-#         self.convw1 = nn.Conv1d(n_embd, n_embd, kernel_size, stride=1, padding=kernel_size // 2, groups=n_embd)
-#         self.convkw1 = nn.Conv1d(n_embd, n_embd, up_size, stride=1, padding=up_size // 2, groups=n_embd)
-#         self.global_fc = nn.Conv1d(n_embd, n_embd, 1, stride=1, padding=0, groups=n_embd)
-#         self.global_fc1 = nn.Conv1d(n_embd, n_embd, 1, stride=1, padding=0, groups=n_embd)
-#
-#         # input
-#         if n_ds_stride > 1:
-#             if downsample_type == 'max':
-#                 kernel_size, stride, padding = \
-#                     n_ds_stride + 1, n_ds_stride, (n_ds_stride + 1) // 2
-#                 self.downsample = nn.MaxPool1d(
-#                     kernel_size, stride=stride, padding=padding)
-#                 self.stride = stride
-#             elif downsample_type == 'avg':
-#                 self.downsample = nn.Sequential(nn.AvgPool1d(n_ds_stride, stride=n_ds_stride, padding=0),
-#                                                 nn.Conv1d(n_embd, n_embd, 1, 1, 0))
-#                 self.stride = n_ds_stride
-#             else:
-#                 raise NotImplementedError("downsample type error")
-#         else:
-#             self.downsample = nn.Identity()
-#             self.stride = 1
-#
-#         # two layer mlp
-#         if n_hidden is None:
-#             n_hidden = 4 * n_embd  # default
-#         if n_out is None:
-#             n_out = n_embd
-#
-#         self.mlp = nn.Sequential(
-#             nn.Conv1d(n_embd, n_hidden, 1, groups=group),
-#             act_layer(),
-#             nn.Conv1d(n_hidden, n_out, 1, groups=group),
-#         )
-#
-#         # 67.57
-#
-#         # base line
-#         # |tIoU = 0.30: mAP = 83.99 (%)
-#         # |tIoU = 0.40: mAP = 80.06 (%)
-#         # |tIoU = 0.50: mAP = 73.11 (%)
-#         # |tIoU = 0.60: mAP = 61.40 (%)
-#         # |tIoU = 0.70: mAP = 46.17 (%)
-#         # Avearge mAP: 68.95 (%)
-#
-#         # | tIoU = 0.30: mAP = 82.82( %)
-#         # | tIoU = 0.40: mAP = 78.94( %)
-#         # | tIoU = 0.50: mAP = 72.00( %)
-#         # | tIoU = 0.60: mAP = 60.38( %)
-#         # | tIoU = 0.70: mAP = 46.19( %)
-#         # Avearge
-#         # mAP: 68.07( %)
-#         # All
-#         # done! Total
-#
-#         # 0.001 0.01
-#         #
-#
-#         # 0.01 0.01
-#         # |tIoU = 0.30: mAP = 83.25 (%)
-#         # |tIoU = 0.40: mAP = 78.84 (%)
-#         # |tIoU = 0.50: mAP = 72.21 (%)
-#         # |tIoU = 0.60: mAP = 60.82 (%)
-#         # |tIoU = 0.70: mAP = 46.43 (%)
-#         # Avearge mAP: 68.31 (%)
-#
-#         # self.mlp0 = nn.Sequential(
-#         #     nn.Conv1d(n_embd, n_hidden, 1),
-#         #     act_layer(),
-#         #     nn.Dropout(0.01),
-#         #     nn.Conv1d(n_hidden, n_out, 1),
-#         #     nn.Dropout(0.01),
-#         # )
-#
-#         # drop path
-#         if path_pdrop > 0.0:
-#             self.drop_path_out = AffineDropPath(n_embd, drop_prob=path_pdrop)
-#             self.drop_path_mlp = AffineDropPath(n_out, drop_prob=path_pdrop)
-#         else:
-#             self.drop_path_out = nn.Identity()
-#             self.drop_path_mlp = nn.Identity()
-#
-#         self.act = act_layer()
-#         self.reset_params(init_conv_vars=init_conv_vars)
-#
-#     def reset_params(self, init_conv_vars=0):
-#         torch.nn.init.normal_(self.psi.weight, 0, init_conv_vars)
-#         torch.nn.init.normal_(self.psi1.weight, 0, init_conv_vars)
-#         torch.nn.init.normal_(self.fc.weight, 0, init_conv_vars)
-#         torch.nn.init.normal_(self.fc1.weight, 0, init_conv_vars)
-#         torch.nn.init.normal_(self.convw.weight, 0, init_conv_vars)
-#         torch.nn.init.normal_(self.convkw.weight, 0, init_conv_vars)
-#         torch.nn.init.normal_(self.convw1.weight, 0, init_conv_vars)
-#         torch.nn.init.normal_(self.convkw1.weight, 0, init_conv_vars)
-#         torch.nn.init.normal_(self.global_fc.weight, 0, init_conv_vars)
-#         torch.nn.init.normal_(self.global_fc1.weight, 0, init_conv_vars)
-#         torch.nn.init.constant_(self.psi.bias, 0)
-#         torch.nn.init.constant_(self.psi1.bias, 0)
-#         torch.nn.init.constant_(self.fc.bias, 0)
-#         torch.nn.init.constant_(self.fc1.bias, 0)
-#         torch.nn.init.constant_(self.convw.bias, 0)
-#         torch.nn.init.constant_(self.convkw.bias, 0)
-#         torch.nn.init.constant_(self.convw1.bias, 0)
-#         torch.nn.init.constant_(self.convkw1.bias, 0)
-#         torch.nn.init.constant_(self.global_fc.bias, 0)
-#         torch.nn.init.constant_(self.global_fc1.bias, 0)
-#
-#     def forward(self, x, mask):
-#         # X shape: B, C, T
-#         B, C, T = x.shape
-#         x = self.downsample(x)
-#         out_mask = F.interpolate(
-#             mask.to(x.dtype),
-#             size=torch.div(T, self.stride, rounding_mode='trunc'),
-#             mode='nearest'
-#         ).detach()
-#         out = self.ln(x)
-#         psi = self.psi(out)
-#         psi1 = self.psi1(out)
-#         fc = self.fc(out)
-#         fc1 = self.fc1(out)
-#         convw = self.convw(out)
-#         convw1 = self.convw1(out)
-#         convkw = self.convkw(out)
-#         convkw1 = self.convkw1(out)
-#         phi = torch.relu(self.global_fc(out.mean(dim=-1, keepdim=True)))
-#         phi1 = torch.relu(self.global_fc1(out.mean(dim=-1, keepdim=True)))
-#         # 当前最高
-#         # out = fc * phi + (convw + convkw) * psi + \
-#         #               torch.relu((convw1 + convkw1) * torch.relu(psi1.mean(dim=-1, keepdim=True))) + \
-#         #               out + \
-#         #               torch.relu(fc1*phi1)
-#         # out = fc * phi + (convw + convkw) * psi + torch.relu( (convw1 + convkw1) * torch.relu(psi1.mean(dim=-1,keepdim=True))) + out
-#         # torch.relu(convw2*torch.relu(psi2.mean(dim=-1, keepdim=True))) + \
-#         out = fc * phi + (convw + convkw) * psi + \
-#               torch.relu((convw1 + convkw1) * torch.relu(psi1.mean(dim=-1, keepdim=True))) + \
-#               out + \
-#               torch.relu(fc1*phi1)
-#
-#         out = x * out_mask + self.drop_path_out(out)
-#         # FFN
-#         out = out + self.drop_path_mlp(self.mlp(self.gn(out)))
-#
-#         return out, out_mask.bool()
 
 
 

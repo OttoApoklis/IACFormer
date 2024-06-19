@@ -2,7 +2,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from .blocks import (get_sinusoid_encoding, MaskedConv1D, ConvBlock, LayerNorm, SGPBlock, TransformerBlock)
+from .blocks import (get_sinusoid_encoding, MaskedConv1D, ConvBlock, LayerNorm, IACM, TransformerBlock)
 from .models import register_backbone
 
 
@@ -81,7 +81,7 @@ class SGPBackbone(nn.Module):
             print(init_conv_vars)
             print("_" * 10)
             self.stem.append(
-                SGPBlock(n_embd, 1, 1, n_hidden=sgp_mlp_dim, k=k, init_conv_vars=init_conv_vars, path_pdrop=path_pdrop))
+                IACM(n_embd, 1, 1, n_hidden=sgp_mlp_dim, k=k, init_conv_vars=init_conv_vars, path_pdrop=path_pdrop))
             self.stem_attention.append(
                 TransformerBlock(
                     n_embd, 2,
@@ -123,9 +123,9 @@ class SGPBackbone(nn.Module):
                 direct = 1
             else:
                 direct = None
-            self.branch.append(SGPBlock(n_embd, self.sgp_win_size[1 + idx], self.scale_factor, path_pdrop=path_pdrop,
-                                        n_hidden=sgp_mlp_dim, downsample_type=downsample_type, k=k,
-                                        init_conv_vars=init_conv_vars, add_new_direct=direct))
+            self.branch.append(IACM(n_embd, self.sgp_win_size[1 + idx], self.scale_factor, path_pdrop=path_pdrop,
+                                    n_hidden=sgp_mlp_dim, downsample_type=downsample_type, k=k,
+                                    init_conv_vars=init_conv_vars, add_new_direct=direct))
             self.branch_attention.append(
                 TransformerBlock(
                     n_embd, 2,
