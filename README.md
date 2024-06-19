@@ -8,7 +8,6 @@ To quickly get start with the model architecture, you can focus mainly on the fo
 
 - `libs/modeling/blocks.py`
 - `libs/modeling/backbones.py`
-- `libs/modeling/meta_archs.py`
 
 ## Installation
 
