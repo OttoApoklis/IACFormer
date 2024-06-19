@@ -119,7 +119,7 @@ The mean average precision (mAP) results for each dataset are:
 
 
 *There has been a slight improvement in the results of some datasets compared to those reported in the paper.
-*Note: We conduct all our experiments on a single A100-40G GPU and the training results may vary depending on the type of GPU used.
+*Note: We conduct all our experiments on a single A800 GPU and the training results may vary depending on the type of GPU used.
 
 ## Test
 

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="802a2c07-c24c-4441-80cb-9222895ce262" name="Changes" comment="" />
+    <list default="true" id="802a2c07-c24c-4441-80cb-9222895ce262" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -32,6 +34,7 @@
       <option name="presentableId" value="Default" />
       <updated>1718777879285</updated>
       <workItem from="1718777881142" duration="2292000" />
+      <workItem from="1718783051970" duration="69000" />
     </task>
     <task id="LOCAL-00001" summary="new commit">
       <created>1718781891274</created>
@@ -40,7 +43,14 @@
       <option name="project" value="LOCAL" />
       <updated>1718781891274</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="new commit">
+      <created>1718783071585</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1718783071585</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
